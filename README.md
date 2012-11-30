@@ -5,7 +5,8 @@ Converts arbitrarily complicated user entered query strings to a haystack query 
 
 ###Input
   Input should be a string.This the query.
-  ####Usage
+  
+####Usage
   ```python
   from haystack_queryparser import ParseSQ
   ```

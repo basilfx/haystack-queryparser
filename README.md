@@ -3,10 +3,7 @@ haystack-queryparser
 
 Converts arbitrarily complicated user entered query strings to a haystack query object.
 
-###Input
-  Input should be a string.This the query.
-  
-####Usage
+###Usage
   ```python
   from haystack_queryparser import ParseSQ
   ```
@@ -16,6 +13,10 @@ Converts arbitrarily complicated user entered query strings to a haystack query 
   sq_object = parser(query)
   ```
   takes a `AND` or `OR` operator to use as default optionally.
+
+###Input
+  Input should be a string.This the query.
+  
 ###Output
   Output is a `SQ(haystack.query.SQ)` object.
   This can be passed to `SearchQuerySet.filter` and the	query will be applied

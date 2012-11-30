@@ -10,7 +10,7 @@ Converts arbitrarily complicated user entered query strings to a haystack query 
   Also provides or_parser and and_parser which can be directly used with a query
   ```python
   parser = ParseSQ() 
-  sq_object = parser(query)
+  sq_object = parser.parse(query)
   ```
   takes a `AND` or `OR` operator to use as default optionally.
 

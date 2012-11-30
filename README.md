@@ -5,6 +5,16 @@ Converts arbitrarily complicated user entered query strings to a haystack query 
 
 ###Input
   Input should be a string.This the query.
+  ####Usage
+  ```python
+  from haystack_queryparser import ParseSQ
+  ```
+  Also provides or_parser and and_parser which can be directly used with a query
+  ```python
+  parser = ParseSQ() 
+  sq_object = parser(query)
+  ```
+  takes a `AND` or `OR` operator to use as default optionally.
 ###Output
   Output is a `SQ(haystack.query.SQ)` object.
   This can be passed to `SearchQuerySet.filter` and the	query will be applied
@@ -14,11 +24,13 @@ Converts arbitrarily complicated user entered query strings to a haystack query 
 ```
 $ python manage.py shell
 >>> import haystack_queryparser.tests as test
->>> test.main()
-test_parse (haystack_queryparser.tests.SimpleTest) ... ok
+>>> tests.main()
+test_operators (modules.haystack_queryparser2.tests.SimpleTest) ... ok
+test_parse (modules.haystack_queryparser2.tests.SimpleTest) ... ok
+test_parse_with_new_default (modules.haystack_queryparser2.tests.SimpleTest) ... ok
 
 ----------------------------------------------------------------------
-Ran 1 test in 0.003s
+Ran 3 tests in 0.004s
 
 OK
 ```

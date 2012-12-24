@@ -19,11 +19,26 @@ class SimpleTest(TestCase):
             '"need note"':str(SQ(content__exact="need note")),
             "author:admin":str(SQ(author="admin")),
             "author:admin notes":str(SQ(author="admin")&SQ(content="notes")),
+            "author:admin OR notes":str(SQ(author="admin")|SQ(content="notes")),
             'title:"need note"':str(SQ(title__exact="need note")),
             # "need note 您好测试这":str(SQ(content="need")&SQ(content="note")&SQ(content=u"您")&SQ(content=u"好")&SQ(content=u"测")&SQ(content=u"试")&SQ(content=u"这")),
-            "need note NOT used":str(SQ(content="need")&SQ(content="note") & ~SQ(content="used")),
-            "(a AND b) OR (c AND d)":str((SQ(content="a")&SQ(content="b"))|(SQ(content="c")&SQ(content="d"))),
-            "a AND b OR (c AND d)":str(SQ(content="a")&SQ(content="b")|(SQ(content="c")&SQ(content="d"))),
+            "need note NOT used":str(SQ(content="need")&SQ(content="note")
+                                     & ~SQ(content="used")),
+            "(a AND b) OR (c AND d)":str((SQ(content="a")&SQ(content="b"))|
+                                         (SQ(content="c")&SQ(content="d"))),
+            "a AND b OR (c AND d)":str(SQ(content="a")&SQ(content="b")|
+                                       (SQ(content="c")&SQ(content="d"))),
+            '"a AND b" OR "(c AND d)"':str(SQ(content__exact="a AND b")|
+                                           SQ(content__exact="(c AND d)")),
+            '"notes done" OR papaya':str(SQ(content__exact="notes done")|
+                                         SQ(content="papaya")),
+            '"a AND b" OR (c AND d)':str(SQ(content__exact="a AND b")|
+                                         (SQ(content="c")&SQ(content="d"))),
+            'labels:"exp>20"':str(SQ(labels__exact="exp>20")),
+            'labels:"HP employee"':str(SQ(labels__exact="HP employee")),
+            'labels:"HP employee" OR something':str(SQ(labels__exact="HP employee")|
+                                                             SQ(content='something')),
+
         }
         parser = ParseSQ()
         
@@ -38,7 +53,8 @@ class SimpleTest(TestCase):
                 'sq':str((SQ(content='helo')|SQ(content='again'))&SQ(content='bye')),
                 'operator':'OR'},
             'helo again AND bye run':{
-                'sq':str(((SQ(content='helo')|SQ(content='again'))&SQ(content='bye'))|SQ(content='run')),
+                'sq':str(((SQ(content='helo')|SQ(content='again'))&
+                          SQ(content='bye'))|SQ(content='run')),
                 'operator':'OR'},
 
         }

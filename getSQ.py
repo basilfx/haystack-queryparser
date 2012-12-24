@@ -4,11 +4,12 @@ import operator
 from haystack.query import SQ
 from django.conf import settings
 
-Patern_Field_Query = re.compile(r"^(\w+):(\w+)\s*",re.U)
-Patern_Field_Exact_Query = re.compile(r"^(\w+):\"(.+)\"\s*",re.U)
+# Patern_Field_Query = re.compile(r"^(\w+):(\w+)\s*",re.U)
+# Patern_Field_Exact_Query = re.compile(r"^(\w+):\"(.+)\"\s*",re.U)
+Patern_Field_Query = re.compile(r"^(\w+):",re.U)
 Patern_Normal_Query = re.compile(r"^(\w+)\s*",re.U)
 Patern_Operator = re.compile(r"^(AND|OR|NOT|\-|\+)\s*",re.U)
-Patern_Quoted_Text = re.compile(r"^\"(.+)\"\s*",re.U)
+Patern_Quoted_Text = re.compile(r"^\"([^\"]*)\"\s*",re.U)
 
 HAYSTACK_DEFAULT_OPERATOR = getattr(settings,'HAYSTACK_DEFAULT_OPERATOR','AND')
 DEFAULT_OPERATOR = ''
@@ -51,18 +52,16 @@ class ParseSQ(object):
 
     def handle_field_query(self):
         mat = re.search(Patern_Field_Query,self.query)
-        self.sq = self.apply_operand(SQ(**{mat.group(1):mat.group(2)}))
+        search_field = mat.group(1)
         self.query, n = re.subn(Patern_Field_Query,'',self.query,1)
-        self.current = self.Default_Operator
-
-    def handle_field_exact_query(self):
-        mat = re.search(Patern_Field_Exact_Query,self.query)
-        query_temp = mat.group(2)
-        #it seams that haystack exact only works if there is a space in the query.So adding a space
-        if not re.search(r'\s',query_temp):
-            query_temp+=" "
-        self.sq = self.apply_operand(SQ(**{mat.group(1)+"__exact":query_temp}))
-        self.query,n = re.subn(Patern_Field_Exact_Query,'',self.query,1)
+        if re.search(Patern_Quoted_Text,self.query):
+            mat = re.search(Patern_Quoted_Text,self.query)
+            self.sq = self.apply_operand(SQ(**{search_field+"__exact":mat.group(1)}))
+            self.query,n = re.subn(Patern_Quoted_Text,'',self.query,1)
+        elif re.search(Patern_Normal_Query,self.query):
+            word = head(self.query)
+            self.sq = self.apply_operand(SQ(**{search_field:word}))
+            self.query = tail(self.query)
         self.current = self.Default_Operator
 
     def handle_brackets(self):
@@ -100,8 +99,8 @@ class ParseSQ(object):
         mat = re.search(Patern_Quoted_Text,self.query)
         query_temp = mat.group(1)
         #it seams that haystack exact only works if there is a space in the query.So adding a space
-        if not re.search(r'\s',query_temp):
-            query_temp+=" "
+        # if not re.search(r'\s',query_temp):
+        #     query_temp+=" "
         self.sq = self.apply_operand(SQ(content__exact=query_temp))
         self.query,n = re.subn(Patern_Quoted_Text,'',self.query,1)
         self.current = self.Default_Operator
@@ -116,8 +115,8 @@ class ParseSQ(object):
                 self.query=self.query.lstrip()
                 if re.search(Patern_Field_Query,self.query):
                     self.handle_field_query()
-                elif re.search(Patern_Field_Exact_Query,self.query):
-                    self.handle_field_exact_query()
+                # elif re.search(Patern_Field_Exact_Query,self.query):
+                #     self.handle_field_exact_query()
                 elif re.search(Patern_Quoted_Text,self.query):
                     self.handle_quoted_query()
                 elif re.search(Patern_Operator,self.query):

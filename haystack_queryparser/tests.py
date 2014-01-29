@@ -71,6 +71,12 @@ class SimpleTest(TestCase):
             "need -note":str(SQ(content="need") & ~SQ(content="note")),
             "need +note":str(SQ(content="need") & SQ(content="note")),
             "need+note":str(SQ(content="need+note")),
+            "iphone AND NOT category:10":str(SQ(content="iphone")&~SQ(
+                category="10")),
+            "NOT category:10":str(~SQ(category="10")),
+            "category:10":str(SQ(category="10")),
+            "-category:10":str(~SQ(category="10")),
+            "category:-10":str(SQ(category="-10")),
         }
         parser = ParseSQ()
 

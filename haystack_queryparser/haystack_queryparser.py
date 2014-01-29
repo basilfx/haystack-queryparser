@@ -53,7 +53,19 @@ class ParseSQ(object):
     def __init__(self, use_default=HAYSTACK_DEFAULT_OPERATOR):
         self.Default_Operator = use_default
 
+    @property
+    def current(self):
+        return self._current
+
+    @current.setter
+    def current(self, current):
+        self._prev = self._current if current in ['-', 'NOT'] else None
+        self._current = current
+
     def apply_operand(self,new_sq):
+        if self.current in ['-', 'NOT']:
+            new_sq = OP[self.current](new_sq)
+            self.current = self._prev
         if self.sq:
             return OP[self.current](self.sq,new_sq)
         return new_sq
@@ -66,10 +78,11 @@ class ParseSQ(object):
             mat = re.search(Patern_Quoted_Text,self.query)
             self.sq = self.apply_operand(SQ(**{search_field+"__exact":mat.group(1)}))
             self.query,n = re.subn(Patern_Quoted_Text,'',self.query,1)
-        elif re.search(Patern_Normal_Query,self.query):
+        else:
             word = head(self.query)
             self.sq = self.apply_operand(SQ(**{search_field:word}))
             self.query = tail(self.query)
+
         self.current = self.Default_Operator
 
     def handle_brackets(self):
@@ -91,12 +104,8 @@ class ParseSQ(object):
 
     def handle_normal_query(self):
         word = head(self.query)
-        if self.current == "NOT" or self.current == "-":
-            self.current = self.Default_Operator
-            self.sq = self.apply_operand(~SQ(content=word))
-        else:
-            self.sq = self.apply_operand(SQ(content=word))
-            self.current = self.Default_Operator
+        self.sq = self.apply_operand(SQ(content=word))
+        self.current = self.Default_Operator
         self.query = tail(self.query)
 
     def handle_operator_query(self):

@@ -8,7 +8,7 @@ Testing common search query syntax.
 
 from unittest import *
 from haystack.query import SQ
-from getSQ import ParseSQ
+from haystack_queryparser import ParseSQ
 
 class SimpleTest(TestCase):
     def setUp(self):pass

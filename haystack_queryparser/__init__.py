@@ -4,3 +4,5 @@ from haystack_queryparser import UnhandledException
 
 or_parser = ParseSQ('OR')
 and_parser = ParseSQ('AND')
+
+from tests import main as run_tests

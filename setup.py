@@ -1,12 +1,12 @@
 from distutils.core import setup
 
 setup(name='haystack_queryparser',
-      version='0.2',
+      version='0.2.1',
       description='A search query parser that works in conjunction with haystack',
       author='Vignesh Sarma K',
       author_email='vignesh@recruiterbox.com',
       url='https://github.com/recruiterbox/haystack-queryparser',
-      download_url='https://github.com/recruiterbox/haystack-queryparser/tarball/0.2',
+      download_url='https://github.com/recruiterbox/haystack-queryparser/tarball/0.2.1',
       classifiers = [
           "Programming Language :: Python",
           "Topic :: Software Development :: Libraries :: Python Modules",

@@ -1,7 +1,7 @@
 haystack-queryparser
 ====================
 
-Converts arbitrarily complicated user entered query strings to a haystack query object.
+Converts arbitrarily complicated user entered query strings to a haystack query object. http://aplopio.github.io/haystack-queryparser
 
 ###Usage
   ```python

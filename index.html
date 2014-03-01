@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Haystack Queryparser by Aplopio</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Haystack Queryparser</h1>
+        <h2>Converts arbitrarily complicated user entered query strings to a haystack query object.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/Aplopio/haystack-queryparser/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/Aplopio/haystack-queryparser/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/Aplopio/haystack-queryparser" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="haystack-queryparser" class="anchor" href="#haystack-queryparser"><span class="octicon octicon-link"></span></a>haystack-queryparser</h1>
+
+<p>Converts arbitrarily complicated user entered query strings to a haystack query object.</p>
+
+<h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<div class="highlight highlight-python"><pre>  <span class="kn">from</span> <span class="nn">haystack_queryparser</span> <span class="kn">import</span> <span class="n">ParseSQ</span>
+</pre></div>
+
+<p>Also provides or_parser and and_parser which can be directly used with a query</p>
+
+<div class="highlight highlight-python"><pre>  <span class="n">parser</span> <span class="o">=</span> <span class="n">ParseSQ</span><span class="p">()</span> 
+  <span class="n">sq_object</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+</pre></div>
+
+<p>takes a <code>AND</code> or <code>OR</code> operator to use as default optionally.</p>
+
+<h3>
+<a name="input" class="anchor" href="#input"><span class="octicon octicon-link"></span></a>Input</h3>
+
+<p>Input should be a string.This the query.</p>
+
+<h3>
+<a name="output" class="anchor" href="#output"><span class="octicon octicon-link"></span></a>Output</h3>
+
+<p>Output is a <code>SQ(haystack.query.SQ)</code> object.
+  This can be passed to <code>SearchQuerySet.filter</code> and the query will be applied</p>
+
+<h3>
+<a name="test" class="anchor" href="#test"><span class="octicon octicon-link"></span></a>Test</h3>
+
+<p>To run the test you need to be in the django environment.So you can do something like this:</p>
+
+<pre><code>$ python manage.py shell
+&gt;&gt;&gt; import haystack_queryparser.tests as test
+&gt;&gt;&gt; tests.main()
+test_operators (modules.haystack_queryparser2.tests.SimpleTest) ... ok
+test_parse (modules.haystack_queryparser2.tests.SimpleTest) ... ok
+test_parse_with_new_default (modules.haystack_queryparser2.tests.SimpleTest) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.004s
+
+OK
+</code></pre>
+      </section>
+    </div>
+
+    
+  </body>
+</html>

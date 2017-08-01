@@ -1,51 +1,30 @@
-import re
-import sys
-import operator
+from .utils import head, tail
+from .exceptions import NoMatchingBracketsFound, UnhandledException
+
 from haystack.query import SQ
+
 from django.conf import settings
+
+import operator
+import sys
+import re
 
 # Patern_Field_Query = re.compile(r"^(\w+):(\w+)\s*",re.U)
 # Patern_Field_Exact_Query = re.compile(r"^(\w+):\"(.+)\"\s*",re.U)
-Patern_Field_Query = re.compile(r"^(\w+):",re.U)
-Patern_Normal_Query = re.compile(r"^(\w+)\s*",re.U)
-Patern_Operator = re.compile(r"^(AND|OR|NOT|\-|\+)\s*",re.U)
-Patern_Quoted_Text = re.compile(r"^\"([^\"]*)\"\s*",re.U)
+Patern_Field_Query = re.compile(r"^(\w+):", re.U)
+Patern_Normal_Query = re.compile(r"^(\w+)\s*", re.U)
+Patern_Operator = re.compile(r"^(AND|OR|NOT|\-|\+)\s*", re.U)
+Patern_Quoted_Text = re.compile(r"^\"([^\"]*)\"\s*", re.U)
 
-HAYSTACK_DEFAULT_OPERATOR = getattr(settings,'HAYSTACK_DEFAULT_OPERATOR','AND')
-DEFAULT_OPERATOR = ''
+HAYSTACK_DEFAULT_OPERATOR = getattr(
+    settings, 'HAYSTACK_DEFAULT_OPERATOR', 'AND')
 OP = {
-    'AND':operator.and_,
-    'OR':operator.or_,
-    'NOT':operator.inv,
-    '+':operator.and_,
-    '-':operator.inv,
+    'AND': operator.and_,
+    'OR': operator.or_,
+    'NOT': operator.inv,
+    '+': operator.and_,
+    '-': operator.inv,
 }
-
-
-class NoMatchingBracketsFound(Exception):
-
-    def __init__(self,value=''):
-        self.value = value
-
-    def __str__(self):
-        return "Matching brackets were not found: "+self.value
-
-
-class UnhandledException(Exception):
-
-    def __init__(self,value=''):
-        self.value = value
-
-    def __str__(self):
-        return self.value
-
-
-def head(string):
-    return string.split()[0]
-
-
-def tail(string):
-    return " ".join(string.split()[1:])
 
 
 class ParseSQ(object):
@@ -62,25 +41,26 @@ class ParseSQ(object):
         self._prev = self._current if current in ['-', 'NOT'] else None
         self._current = current
 
-    def apply_operand(self,new_sq):
+    def apply_operand(self, new_sq):
         if self.current in ['-', 'NOT']:
             new_sq = OP[self.current](new_sq)
             self.current = self._prev
         if self.sq:
-            return OP[self.current](self.sq,new_sq)
+            return OP[self.current](self.sq, new_sq)
         return new_sq
 
     def handle_field_query(self):
-        mat = re.search(Patern_Field_Query,self.query)
+        mat = re.search(Patern_Field_Query, self.query)
         search_field = mat.group(1)
-        self.query, n = re.subn(Patern_Field_Query,'',self.query,1)
-        if re.search(Patern_Quoted_Text,self.query):
-            mat = re.search(Patern_Quoted_Text,self.query)
-            self.sq = self.apply_operand(SQ(**{search_field+"__exact":mat.group(1)}))
-            self.query,n = re.subn(Patern_Quoted_Text,'',self.query,1)
+        self.query, n = re.subn(Patern_Field_Query, '', self.query, 1)
+        if re.search(Patern_Quoted_Text, self.query):
+            mat = re.search(Patern_Quoted_Text, self.query)
+            self.sq = self.apply_operand(
+                SQ(**{search_field + "__exact": mat.group(1)}))
+            self.query, n = re.subn(Patern_Quoted_Text, '', self.query, 1)
         else:
             word = head(self.query)
-            self.sq = self.apply_operand(SQ(**{search_field:word}))
+            self.sq = self.apply_operand(SQ(**{search_field: word}))
             self.query = tail(self.query)
 
         self.current = self.Default_Operator
@@ -109,41 +89,37 @@ class ParseSQ(object):
         self.query = tail(self.query)
 
     def handle_operator_query(self):
-        self.current = re.search(Patern_Operator,self.query).group(1)
-        self.query,n = re.subn(Patern_Operator,'',self.query,1)
+        self.current = re.search(Patern_Operator, self.query).group(1)
+        self.query, n = re.subn(Patern_Operator, '', self.query, 1)
 
     def handle_quoted_query(self):
-        mat = re.search(Patern_Quoted_Text,self.query)
+        mat = re.search(Patern_Quoted_Text, self.query)
         query_temp = mat.group(1)
-        # it seams that haystack exact only works if there is a space in the query.So adding a space
-        # if not re.search(r'\s',query_temp):
-        #     query_temp+=" "
         self.sq = self.apply_operand(SQ(content__exact=query_temp))
-        self.query,n = re.subn(Patern_Quoted_Text,'',self.query,1)
+        self.query, n = re.subn(Patern_Quoted_Text, '', self.query, 1)
         self.current = self.Default_Operator
 
-    def parse(self,query):
+    def parse(self, query):
         self.query = query
         try:
             self.sq = SQ()
             self.current = self.Default_Operator
             while self.query:
                 self.query = self.query.lstrip()
-                if re.search(Patern_Field_Query,self.query):
+                if re.search(Patern_Field_Query, self.query):
                     self.handle_field_query()
-                # elif re.search(Patern_Field_Exact_Query,self.query):
+                # elif re.search(Patern_Field_Exact_Query, self.query):
                 #     self.handle_field_exact_query()
-                elif re.search(Patern_Quoted_Text,self.query):
+                elif re.search(Patern_Quoted_Text, self.query):
                     self.handle_quoted_query()
-                elif re.search(Patern_Operator,self.query):
+                elif re.search(Patern_Operator, self.query):
                     self.handle_operator_query()
-                elif re.search(Patern_Normal_Query,self.query):
+                elif re.search(Patern_Normal_Query, self.query):
                     self.handle_normal_query()
                 elif self.query[0] == "(":
                     self.handle_brackets()
                 else:
                     self.query = self.query[1:]
         except:
-            print self.sq, self.query, self.current
             raise UnhandledException(sys.exc_info())
         return self.sq

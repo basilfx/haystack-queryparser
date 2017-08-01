@@ -1,8 +1,8 @@
-from haystack_queryparser import ParseSQ
-from haystack_queryparser import NoMatchingBracketsFound
-from haystack_queryparser import UnhandledException
+from .parser import ParseSQ
+
+from .exceptions import QueryParserException
+from .exceptions import NoMatchingBracketsFound
+from .exceptions import UnhandledException
 
 or_parser = ParseSQ('OR')
 and_parser = ParseSQ('AND')
-
-from tests import main as run_tests

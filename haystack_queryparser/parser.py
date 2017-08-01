@@ -16,9 +16,9 @@ Patern_Normal_Query = re.compile(r"^(\w+)\s*", re.U)
 Patern_Operator = re.compile(r"^(AND|OR|NOT|\-|\+)\s*", re.U)
 Patern_Quoted_Text = re.compile(r"^\"([^\"]*)\"\s*", re.U)
 
-HAYSTACK_DEFAULT_OPERATOR = getattr(
-    settings, 'HAYSTACK_DEFAULT_OPERATOR', 'AND')
-OP = {
+DEFAULT_OPERATOR = getattr(
+    settings, 'DEFAULT_OPERATOR', 'AND')
+OPERATORS = {
     'AND': operator.and_,
     'OR': operator.or_,
     'NOT': operator.inv,
@@ -29,7 +29,7 @@ OP = {
 
 class ParseSQ(object):
 
-    def __init__(self, use_default=HAYSTACK_DEFAULT_OPERATOR):
+    def __init__(self, use_default=DEFAULT_OPERATOR):
         self.Default_Operator = use_default
 
     @property
@@ -43,10 +43,10 @@ class ParseSQ(object):
 
     def apply_operand(self, new_sq):
         if self.current in ['-', 'NOT']:
-            new_sq = OP[self.current](new_sq)
+            new_sq = OPERATORS[self.current](new_sq)
             self.current = self._prev
         if self.sq:
-            return OP[self.current](self.sq, new_sq)
+            return OPERATORS[self.current](self.sq, new_sq)
         return new_sq
 
     def handle_field_query(self):
@@ -120,6 +120,6 @@ class ParseSQ(object):
                     self.handle_brackets()
                 else:
                     self.query = self.query[1:]
-        except:
-            raise UnhandledException(sys.exc_info())
+        except Exception as e:
+            raise UnhandledException() from e
         return self.sq

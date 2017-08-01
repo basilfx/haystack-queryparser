@@ -1,28 +1,29 @@
-haystack-queryparser
-====================
-
+# haystack-queryparser
 Converts arbitrarily complicated user entered query strings to a haystack query object. http://aplopio.github.io/haystack-queryparser
 
-###Usage
-  ```python
-  from haystack_queryparser import ParseSQ
-  ```
-  Also provides or_parser and and_parser which can be directly used with a query
-  ```python
-  parser = ParseSQ() 
-  sq_object = parser.parse(query)
-  ```
-  takes a `AND` or `OR` operator to use as default optionally.
+## Usage
+```python
+from haystack_queryparser import ParseSQ
+```
 
-###Input
-  Input should be a string.This the query.
-  
-###Output
-  Output is a `SQ(haystack.query.SQ)` object.
-  This can be passed to `SearchQuerySet.filter` and the	query will be applied
+Also provides or_parser and and_parser which can be directly used with a query.
 
-###Test
-  To run the test you need to be in the django environment.So you can do something like this:
+```python
+parser = ParseSQ()
+sq_object = parser.parse(query)
+```
+
+It optionally takes `AND` or `OR` operators.
+
+### Input
+Input should be a string. This the query.
+
+### Output
+Output is a `SQ(haystack.query.SQ)` object. This can be passed to `SearchQuerySet.filter` and the	query will be applied.
+
+## Test
+To run the test you need to be in the django environment.So you can do something like this:
+
 ```
 $ python manage.py shell
 >>> import haystack_queryparser.tests as test

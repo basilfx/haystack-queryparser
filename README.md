@@ -22,18 +22,8 @@ Input should be a string. This the query.
 Output is a `SQ(haystack.query.SQ)` object. This can be passed to `SearchQuerySet.filter` and the	query will be applied.
 
 ## Test
-To run the test you need to be in the django environment.So you can do something like this:
+Nosetests is used as the test runner. You can invoke the tests from the root folder using:
 
-```
-$ python manage.py shell
->>> import haystack_queryparser.tests as test
->>> tests.main()
-test_operators (modules.haystack_queryparser2.tests.SimpleTest) ... ok
-test_parse (modules.haystack_queryparser2.tests.SimpleTest) ... ok
-test_parse_with_new_default (modules.haystack_queryparser2.tests.SimpleTest) ... ok
-
-----------------------------------------------------------------------
-Ran 3 tests in 0.004s
-
-OK
+```shell
+DJANGO_SETTINGS_MODULE=tests.settings python setup.py test
 ```

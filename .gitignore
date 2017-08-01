@@ -1,8 +1,10 @@
+__pycache__
+.eggs
+*.egg-info
 *.log
 *.pot
 *.pyc
-*~
-local_settings.py
-MANIFEST
-dist
 build
+env
+dist
+MANIFEST

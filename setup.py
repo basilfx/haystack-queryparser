@@ -1,8 +1,8 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='haystack_queryparser',
-    version='0.2.1',
+    version='0.3.0',
     description='A search query parser that works in conjunction with Django Haystack.',  # noqa
     author='Vignesh Sarma K',
     author_email='vignesh@recruiterbox.com',

@@ -5,13 +5,13 @@ Converts arbitrarily complicated user entered query strings to a haystack query 
 You can install this version using:
 
 ```shell
-pip install git+https://github.com/basilfx/haystack_queryparser.git
+pip install git+https://github.com/basilfx/haystack-queryparser
 ```
 
 Alternatively, you can include it in your `requirements.txt` as
 
 ```text
--e git+https://github.com/basilfx/haystack_queryparser#egg=haystack_queryparser
+-e git+https://github.com/basilfx/haystack-queryparser#egg=haystack_queryparser
 ```
 
 ## Usage

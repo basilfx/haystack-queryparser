@@ -21,4 +21,8 @@ setup(
     ],
     keywords=["parsing", "query", "search"],
     packages=['haystack_queryparser'],
+    setup_requires=["nose"],
+    install_requires=["django-haystack"],
+    test_suite="tests",
+    zip_safe=False
 )

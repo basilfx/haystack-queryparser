@@ -1,6 +1,19 @@
 # haystack-queryparser
 Converts arbitrarily complicated user entered query strings to a haystack query object. http://aplopio.github.io/haystack-queryparser
 
+## Installation
+You can install this version using:
+
+```shell
+pip install git+https://github.com/basilfx/haystack_queryparser.git
+```
+
+Alternatively, you can include it in your `requirements.txt` as
+
+```text
+-e git+https://github.com/basilfx/haystack_queryparser#egg=haystack_queryparser
+```
+
 ## Usage
 ```python
 from haystack_queryparser import ParseSQ
